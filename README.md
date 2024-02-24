@@ -59,7 +59,7 @@ plot |>
   coord_equal()  # coord equal is highly recommended to create symmetric shapes
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="70%" />
 
 Transparency and outline of the arrows can be controlled with the
 `outline_col` and `alpha` arguments.
@@ -70,7 +70,7 @@ plot |>
   coord_equal()  # coord equal is highly recommended to create symmetric shapes
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="70%" />
 
 The flow arrows are geom_polygons, with the flow mapped to the fill
 aesthetic. Thus, the fill can be adjusted like for any geom.
@@ -82,7 +82,7 @@ plot |>
   scale_fill_gradient(low="black", high = "red")
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="70%" />
 
 Size of the edges and offset (distance between two paired edges) can be
 controlled with `edge_width_factor` and `edge_offset_factor` .
@@ -93,7 +93,7 @@ plot |>
   coord_equal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="70%" />
 
 Finally, the size of the nodes can be adjusted with
 `node_radius_factor`, and the distance between nodes and edges with
@@ -106,7 +106,7 @@ plot |>
   coord_equal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="70%" />
 
 The flowmap can be turned into an interactive plot using the
 [plotly](https://github.com/plotly/plotly.R) library. The names of the

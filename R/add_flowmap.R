@@ -298,7 +298,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     p <-
       p +
       geom_polygon(data=plot_df,aes(x,y,group=group,fill=flow,text=label),alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
-      geom_polygon(data=nodes_poly,aes(x=x,y=y,group=group,fill=flow,text=label),col=outline_col)
+      geom_polygon(data=nodes_poly,aes(x=x,y=y,group=group,fill=flow,text=label),col=outline_col,linewidth=outline_linewidth)
   }, warning = function(w) {
     if (grepl("text",w,fixed=T)){invokeRestart("muffleWarning")}
   })
