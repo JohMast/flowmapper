@@ -75,7 +75,7 @@ plot |>
 
 The flow arrows are geom_polygons, with the flow mapped to the fill aesthetic. Thus, the fill can be adjusted like for any geom.
 
-```{r}
+```{r fig.width=7}
 plot |>
   add_flowmap(testdata)+
   coord_equal() + 
@@ -84,7 +84,7 @@ plot |>
 
 Size of the edges and offset (distance between two paired edges) can be controlled with `edge_width_factor` and `edge_offset_factor` .
 
-```{r}
+```{r fig.width=10}
 plot |>
   add_flowmap(testdata, edge_offset_factor = 4, edge_width_factor = 2)+
   coord_equal()
@@ -93,6 +93,7 @@ plot |>
 Finally, the size of the nodes can be adjusted with `node_radius_factor`, and the distance between nodes and edges with `node_buffer_factor`.
 
 ```{r dpi=300}
+
 plot |>
   add_flowmap(testdata, node_radius_factor = 2, node_buffer_factor = 0.5)+
   coord_equal()
