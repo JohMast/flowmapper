@@ -100,6 +100,7 @@ Finally, the size of the nodes can be adjusted with
 `node_buffer_factor`.
 
 ``` r
+
 plot |>
   add_flowmap(testdata, node_radius_factor = 2, node_buffer_factor = 0.5)+
   coord_equal()
