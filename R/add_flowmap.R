@@ -269,7 +269,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     # add the flows for each arrow (for fill)
     left_join(flows,by="group") |>
     mutate(
-      label=paste0(group,"\n",flow),
+      label=paste0("Route: ",group,"\nFlow: ",flow),
       group=forcats::fct_reorder(group,flowsum)
     )
 
@@ -290,7 +290,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
       return(coords)
     }) |>
     bind_rows()|>
-    mutate(label = paste0(group,"\n",flowsum))
+    mutate(label = paste0("Node: ",group,"\nTotal Flow: ",flowsum))
 
 
   # add the nodes and edges to the base plot
