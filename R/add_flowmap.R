@@ -269,7 +269,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     # add the flows for each arrow (for fill)
     left_join(flows,by="group") |>
     mutate(
-      label=group,
+      label=paste0(group,"\n",flow),
       group=forcats::fct_reorder(group,flowsum)
     )
 
@@ -285,11 +285,12 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     lapply(function(x){
       coords <- get_circle_coords(c(x$x,x$y),x$adj_radius)
       coords$group=x$id
+      coords$flowsum=x$flowsum
       coords$flow=x$flow
       return(coords)
     }) |>
     bind_rows()|>
-    mutate(label = group)
+    mutate(label = paste0(group,"\n",flowsum))
 
 
   # add the nodes and edges to the base plot
