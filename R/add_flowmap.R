@@ -1,3 +1,10 @@
+utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
+                         "aes","aux1","aux2","e","flow","flow_ab","flow_ba",
+                         "flowsum","group","id","id_a","id_b","label","m_c",
+                         "name","off_x","off_y","point","radius","value",
+                         "width","x","xa","xb","xe","xf","xg","xm","xz","y",
+                         "ya","yb","ye","yf","yg","ym","yz"))
+
 #' Add a flow map to a ggplot
 #'
 #' @param p The plot to which the flowmap should be added.
