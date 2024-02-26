@@ -4,7 +4,7 @@ Version: 0.0.0.1
 Authors@R: 
     person("Johannes", "Mast", , "johannes.mast@dlr.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6595-5834"))
-Description: Adds flow maps to ggplots. The flow maps consist of gglayers which visualize the nodes as circles and the bilateral flows between the nodes as bidirectional half-arrows.
+Description: Adds flow maps to ggplots. The flow maps consist of ggplot layers which visualize the nodes as circles and the bilateral flows between the nodes as bidirectional half-arrows.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

@@ -42,7 +42,7 @@ add_flowmap(
 \item{arrow_point_angle}{Controls the pointiness of the edges.}
 }
 \value{
-The ggplot with an additional polygon layer for the flow arrows and an additional polygon (\link[ggforce]{geom_circle}) layer for the nodes
+The ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes
 }
 \description{
 Add a flow map to a ggplot
