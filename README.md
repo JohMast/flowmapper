@@ -50,7 +50,6 @@ then passed into `add_flowmap`.
 
 ``` r
 library(ggplot2)
-#> Warning: Paket 'ggplot2' wurde unter R Version 4.2.3 erstellt
 plot <- ggplot() # empty ggplot
 
 library(flowmapper)

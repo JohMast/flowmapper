@@ -57,7 +57,7 @@ data.frame(
 
 The dataframe and the ggplot that the flowmap should be added to are then passed into `add_flowmap`.
 
-```{r }
+```{r warning=FALSE}
 library(ggplot2)
 plot <- ggplot() # empty ggplot
 
