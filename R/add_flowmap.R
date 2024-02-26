@@ -1,7 +1,3 @@
-library(ggplot2)
-library(tibble)
-library(dplyr)
-library(plotly)
 #' Add a flow map to a ggplot
 #'
 #' @param p The plot to which the flowmap should be added.
