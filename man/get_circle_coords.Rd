@@ -2,8 +2,7 @@
 % Please edit documentation in R/add_flowmap.R
 \name{get_circle_coords}
 \alias{get_circle_coords}
-\title{Credit to https://stackoverflow.com/a/6863490
-Helper function to create coordinates for circles of nodes}
+\title{Helper function to create coordinates for circles of nodes}
 \usage{
 get_circle_coords(center = c(0, 0), r = 1, npoints = 25)
 }
@@ -18,6 +17,8 @@ get_circle_coords(center = c(0, 0), r = 1, npoints = 25)
 a dataframe with x and y coordinates of the circle
 }
 \description{
-Credit to https://stackoverflow.com/a/6863490
 Helper function to create coordinates for circles of nodes
+}
+\author{
+Johannes Mast, Credit to https://stackoverflow.com/a/6863490
 }

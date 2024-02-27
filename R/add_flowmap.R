@@ -18,6 +18,10 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' @param alpha Opacity of the edges.
 #' @param outline_col Color of the outline of the edges.
 #' @param arrow_point_angle Controls the pointiness of the edges.
+#' @param add_legend Add a legend for width to the plot? Must be one of "none","bottom","top","left", or "right". (Experimental)
+#' @param legend_col If \code{add_legend}, controls the color of the legend. Default is grey.
+#' @param legend_nudge_x Adjusts the horizontal position of the legend in map units.
+#' @param legend_nudge_y Adjusts the vertical position of the legend in map units.
 #'
 #' @details
 #' The function requires as inputs a dataframe \code{flowdat} which contains for every combination of two nodes a and b the coordinates of these nodes as well as the intensity of flow between those nodes in both directions (a to b, b to a). The dataframe should have the following columns:
@@ -34,12 +38,12 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #'
 #' The function will impose coord_equal() on the ggplot.
 #'
-#' Inspired by\href{https://flowmap.gl/}{flowmap.gl}.
+#' Inspired by \href{https://flowmap.gl/}{flowmap.gl}.
 #'
 #' @importFrom dplyr mutate select left_join summarize group_by ungroup bind_rows n arrange group_split
 #' @importFrom tidyr pivot_longer separate
 #' @importFrom forcats fct_reorder
-#' @importFrom ggplot2 ggplot geom_polygon
+#' @importFrom ggplot2 ggplot geom_polygon annotate
 #' @return The ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes
 #' @author Johannes Mast
 #' @export
@@ -59,12 +63,14 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' library(ggplot2)
 #' plot <- ggplot()
 #' plot |> add_flowmap(testdata)
-add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="black",node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = 0.25, edge_width_factor = 1.2, arrow_point_angle = 45){
+add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="black",node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = 0.25, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
 
   # Some checks
   if(arrow_point_angle>75){arrow_point_angle <- 75; cat("Warning. arrow_point_angle cannot exceed 75 degrees")}
   if(arrow_point_angle<20){arrow_point_angle <- 20; cat("Warning. arrow_point_angle cannot be lower than 20 degrees")}
-
+  if(!add_legend %in% c("top","bottom","none","right","left")){
+    warning("add_legend must be either 'top', 'bottom','right','left', or 'none'. Defaulting to 'none'.")
+    add_legend <- "none"}
 
   nodes <-
     bind_rows(
@@ -307,13 +313,260 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     if (grepl("text",w,fixed=T)){invokeRestart("muffleWarning")}
   })
 
+
+  if(add_legend %in% c("top","bottom")){
+    pa_l <- min(nodes_poly$x)
+    pa_r <- max(nodes_poly$x)
+    pa_d <- min(nodes_poly$y)
+    pa_u <- max(nodes_poly$y)
+    hrange <- pa_r - pa_l
+    vrange <- pa_u - pa_d
+
+    maxwidth <- max(max(flowdat_ba$width),max(flowdat_ab$width))/2
+    minwidth <- min(min(flowdat_ba$width),min(flowdat_ab$width))/2
+
+    minflow <- min(c(flowdat_ab$flow_ab,flowdat_ba$flow_ba))
+    maxflow <- max(c(flowdat_ab$flow_ab,flowdat_ba$flow_ba))
+    meanflow <- mean(c(minflow,maxflow))
+
+    l1_y <- pa_d
+    l1_x <- pa_l
+    l2_y <- pa_d
+    l2_x <- pa_r
+    l3_y <- pa_d - maxwidth
+    l3_x <- pa_r
+    l4_y <- pa_d - maxwidth
+    l4_x <- pa_r - hrange*0.1
+    l5_y <- pa_d - minwidth
+    l5_x <- pa_l + hrange*0.1
+    l6_y <- pa_d - minwidth
+    l6_x <- pa_l
+
+    legend_df <-
+      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x),
+           y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y),
+           flow=maxflow)
+
+
+
+    #nudge in x direction
+    nudge_x <- - 0.0* hrange
+    legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
+
+    #nudge in y direction depends on whether the legend is top or bottom
+    if(add_legend == "top"){
+      #nudge in y direction
+      nudge_y <- + 1.2* vrange
+      legend_df$y <- legend_df$y + nudge_y + legend_nudge_y
+    }
+
+    if(add_legend == "bottom"){
+      #nudge in y direction
+      nudge_y <- - 0.2* vrange
+      legend_df$y <- legend_df$y + nudge_y + legend_nudge_y
+    }
+
+
+    p <-
+      p+
+    geom_polygon(data=legend_df,aes(x=x,y=y),fill=legend_col,alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
+    # min annotation
+    annotate(geom = "text",
+             x = legend_df$x[5],
+             y = legend_df$y[1]+vrange*0.05,
+             label=short_scale(minflow),
+             color=legend_col)+
+    annotate("segment",
+             x = legend_df$x[5],
+             y = legend_df$y[1],
+             xend = legend_df$x[5],
+             yend = legend_df$y[1]-minwidth,col="white")+
+
+    # mean annotation
+    annotate(geom = "text",
+             x = mean(c(legend_df$x[4],legend_df$x[5])),
+             y = legend_df$y[1]+vrange*0.05,
+             label=short_scale(meanflow),
+             color=legend_col)+
+    annotate("segment",
+             x = mean(c(legend_df$x[4],legend_df$x[5])),
+             y = legend_df$y[1],
+             xend = mean(c(legend_df$x[4],legend_df$x[5])),
+             yend = legend_df$y[1]-mean(c(minwidth,maxwidth)),col="white")+
+    # max annotation
+    annotate(geom = "text",
+             x = legend_df$x[4],
+             y = legend_df$y[1]+vrange*0.05,
+             label=short_scale(maxflow),
+             color=legend_col)+
+    annotate("segment",
+             x = legend_df$x[4],
+             y = legend_df$y[1],
+             xend = legend_df$x[4],
+             yend = legend_df$y[1]-maxwidth,col="white")
+  }
+
+
+
+
+
+  if(add_legend %in% c("left","right")){
+    pa_l <- min(nodes_poly$x)
+    pa_r <- max(nodes_poly$x)
+    pa_d <- min(nodes_poly$y)
+    pa_u <- max(nodes_poly$y)
+    hrange <- pa_r - pa_l
+    vrange <- pa_u - pa_d
+
+    maxwidth <- max(max(flowdat_ba$width),max(flowdat_ab$width))/2
+    minwidth <- min(min(flowdat_ba$width),min(flowdat_ab$width))/2
+
+    #flip the legend if on left
+    if(add_legend=="left"){
+      minwidth <- -1*minwidth
+      maxwidth <- -1*maxwidth
+    }
+
+
+    minflow <- min(c(flowdat_ab$flow_ab,flowdat_ba$flow_ba))
+    maxflow <- max(c(flowdat_ab$flow_ab,flowdat_ba$flow_ba))
+    meanflow <- mean(c(minflow,maxflow))
+
+    l1_y <- pa_d
+    l1_x <- pa_r
+    l2_y <- pa_u
+    l2_x <- pa_r
+    l3_y <- pa_u
+    l3_x <- pa_r + maxwidth
+    l4_y <- pa_u - vrange*0.1
+    l4_x <- pa_r + maxwidth
+    l5_y <- pa_d + vrange*0.1
+    l5_x <- pa_r + minwidth
+    l6_y <- pa_d
+    l6_x <- pa_r + minwidth
+
+    legend_df <-
+      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x),
+             y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y),
+             flow=maxflow)
+
+
+
+    #nudge in y direction
+    nudge_y <- - 0.0* vrange
+    legend_df$y <- legend_df$y + nudge_y + legend_nudge_y
+
+    #nudge in y direction depends on whether the legend is top or bottom
+    if(add_legend == "left"){
+      #nudge in x direction
+      nudge_x <- - 1.1* hrange
+      legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
+    }
+
+    if(add_legend == "right"){
+      #nudge in y direction
+      nudge_x <- + 0.2* hrange
+      legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
+    }
+
+    p <- p+
+      geom_polygon(data=legend_df,aes(x=x,y=y),fill=legend_col,alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
+      annotate("segment",
+               x = legend_df$x[5],
+               y = legend_df$y[1],
+               xend = legend_df$x[5]+minwidth,
+               yend = legend_df$y[1],col="white")+
+      annotate("segment",
+               y = mean(c(legend_df$y[4],legend_df$y[5])),
+               x = legend_df$x[1],
+               yend = mean(c(legend_df$y[4],legend_df$y[5])),
+               xend = legend_df$x[1]+mean(c(minwidth,maxwidth)),col="white")+
+
+      annotate("segment",
+               x = legend_df$x[1],
+               y = legend_df$y[4],
+               xend = legend_df$x[1]+maxwidth,
+               yend = legend_df$y[4],col="white"
+               )
+    if(add_legend=="left"){
+      p <-
+        p +
+        annotate(geom = "text",
+                 x = legend_df$x[5],
+                 y = legend_df$y[1],
+                 label=paste0(" ",short_scale(minflow)),
+                 color=legend_col,
+                 hjust = 0)+
+        annotate(geom = "text",
+                 y = mean(c(legend_df$y[4],legend_df$y[5])),
+                 x = legend_df$x[1],
+                 label=paste0(" ",short_scale(meanflow)),
+                 color=legend_col,
+                 hjust = 0)+
+        annotate(geom = "text",
+                 x = legend_df$x[1],
+                 y = legend_df$y[4],
+                 label=paste0(" ",short_scale(maxflow)),
+                 color=legend_col,
+                 hjust = 0)
+    }
+    if(add_legend=="right"){
+      p <-
+        p +
+        annotate(geom = "text",
+                 x = legend_df$x[5],
+                 y = legend_df$y[1],
+                 label=paste0(short_scale(minflow)," "),
+                 color=legend_col,
+                 hjust = 1)+
+        annotate(geom = "text",
+                 y = mean(c(legend_df$y[4],legend_df$y[5])),
+                 x = legend_df$x[1],
+                 label=paste0(short_scale(meanflow)," "),
+                 color=legend_col,
+                 hjust = 1)+
+        annotate(geom = "text",
+                 x = legend_df$x[1],
+                 y = legend_df$y[4],
+                 label=paste0(short_scale(maxflow)," "),
+                 color=legend_col,
+                 hjust = 1)
+    }
+
+  }
+
   return(p)
 }
 
 
-#' Credit to https://stackoverflow.com/a/6863490
-#' Helper function to create coordinates for circles of nodes
+#' Create short scale format for numbers in the legend
 #'
+#' @param x The number
+#' @param digits Significant digits
+#'
+#' @author Johannes Mast, credit: https://stackoverflow.com/a/59086755
+#' @importFrom scales scientific
+#' @importFrom dplyr case_when
+short_scale = function(x, digits=3) {
+  compress = function(x, n) {
+    signif(x * 10^(-n), digits)
+  }
+  case_when(
+    x >= 1e12   ~ paste0(compress(x, 12), "T"),
+    x >= 1e9   ~ paste0(compress(x, 9), "G"),
+    x >= 1e6   ~ paste0(compress(x, 6), "M"),
+    x >= 1000  ~ paste0(compress(x, 3), "k"),
+    x >= 1     ~ as.character(compress(x, 0)),
+    x >= 0.001 ~ paste0(scales::scientific(x)),
+    x >= 1e-6  ~ paste0(scales::scientific(x))
+  )
+}
+
+
+
+#'
+#' Helper function to create coordinates for circles of nodes
+#' @author Johannes Mast, Credit to https://stackoverflow.com/a/6863490
 #' @param center center y and y coordinates
 #' @param r radius
 #' @param npoints number of points

@@ -107,6 +107,19 @@ plot |>
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="70%" />
 
+Because the edges are polygons and not linked to an aesthetic, a typical
+ggplot legend cannot be created for their width. As an alternative, a
+legend can be added to the bottom of the main panel by using
+`add_legend` and `legend_col`.
+
+``` r
+plot |>
+  add_flowmap(testdata,add_legend = "bottom",legend_col = "gray20")+
+  coord_equal()
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="70%" />
+
 The flowmap can be turned into an interactive plot using the
 [plotly](https://github.com/plotly/plotly.R) library. The names of the
 nodes and flows are mapped to the `text` aesthetic and can be used in

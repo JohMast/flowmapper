@@ -15,7 +15,11 @@ add_flowmap(
   edge_offset_factor = 1,
   node_fill_factor = 0.25,
   edge_width_factor = 1.2,
-  arrow_point_angle = 45
+  arrow_point_angle = 45,
+  add_legend = "none",
+  legend_nudge_x = 0,
+  legend_nudge_y = 0,
+  legend_col = "gray"
 )
 }
 \arguments{
@@ -40,6 +44,14 @@ add_flowmap(
 \item{edge_width_factor}{Controls the width of the edges}
 
 \item{arrow_point_angle}{Controls the pointiness of the edges.}
+
+\item{add_legend}{Add a legend for width to the plot? Must be one of "none","bottom","top","left", or "right". (Experimental)}
+
+\item{legend_nudge_x}{Adjusts the horizontal position of the legend in map units.}
+
+\item{legend_nudge_y}{Adjusts the vertical position of the legend in map units.}
+
+\item{legend_col}{If \code{add_legend}, controls the color of the legend. Default is grey.}
 }
 \value{
 The ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes
@@ -62,7 +74,7 @@ The function requires as inputs a dataframe \code{flowdat} which contains for ev
 
 The function will impose coord_equal() on the ggplot.
 
-Inspired by\href{https://flowmap.gl/}{flowmap.gl}.
+Inspired by \href{https://flowmap.gl/}{flowmap.gl}.
 }
 \examples{
 testdata <-
