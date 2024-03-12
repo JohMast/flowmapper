@@ -121,8 +121,8 @@ plot |>
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="70%" />
 
 If the number of nodes is very high, the plot will appear cluttered. In
-that case, nodes can be clusered and merged by proximity, with `k_nodes`
-controlling the number of clusters.
+that case, nodes can be clustered and merged by proximity, with
+`k_nodes` controlling the number of clusters.
 
 ``` r
 plot |>

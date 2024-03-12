@@ -109,7 +109,7 @@ plot |>
   coord_equal()
 ```
 
-If the number of nodes is very high, the plot will appear cluttered. In that case, nodes can be clusered and merged by proximity, with `k_nodes` controlling the number of clusters.
+If the number of nodes is very high, the plot will appear cluttered. In that case, nodes can be clustered and merged by proximity, with `k_nodes` controlling the number of clusters.
 
 ```{r}
 plot |>
