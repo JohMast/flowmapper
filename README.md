@@ -60,6 +60,18 @@ plot |>
 
 <img src="man/figures/README-c2-1.png" width="70%" />
 
+If the number of nodes is very high, the plot will appear cluttered. In
+that case, nodes can be clustered and merged by proximity, with
+`k_nodes` controlling the number of clusters.
+
+``` r
+plot |>
+  add_flowmap(testdata,k_nodes = 4)+
+  coord_equal()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="70%" />
+
 Transparency and outline of the arrows can be controlled with the
 `outline_col` and `alpha` arguments.
 
@@ -105,7 +117,7 @@ plot |>
   coord_equal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="70%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="70%" />
 
 Because the edges are polygons and not linked to an aesthetic, a typical
 ggplot legend cannot be created for their width. As an alternative, a
@@ -115,18 +127,6 @@ legend can be added to the bottom of the main panel by using
 ``` r
 plot |>
   add_flowmap(testdata,add_legend = "bottom",legend_col = "gray20")+
-  coord_equal()
-```
-
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="70%" />
-
-If the number of nodes is very high, the plot will appear cluttered. In
-that case, nodes can be clustered and merged by proximity, with
-`k_nodes` controlling the number of clusters.
-
-``` r
-plot |>
-  add_flowmap(testdata,k_nodes = 4)+
   coord_equal()
 ```
 

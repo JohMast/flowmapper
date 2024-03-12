@@ -67,6 +67,16 @@ plot |>
   coord_equal()  # coord equal is highly recommended to create symmetric shapes
 ```
 
+
+If the number of nodes is very high, the plot will appear cluttered. In that case, nodes can be clustered and merged by proximity, with `k_nodes` controlling the number of clusters.
+
+```{r}
+plot |>
+  add_flowmap(testdata,k_nodes = 4)+
+  coord_equal()
+```
+
+
 Transparency and outline of the arrows can be controlled with the `outline_col` and `alpha` arguments.
 
 ```{r c3}
@@ -109,13 +119,6 @@ plot |>
   coord_equal()
 ```
 
-If the number of nodes is very high, the plot will appear cluttered. In that case, nodes can be clustered and merged by proximity, with `k_nodes` controlling the number of clusters.
-
-```{r}
-plot |>
-  add_flowmap(testdata,k_nodes = 4)+
-  coord_equal()
-```
 
 The flowmap can be turned into an interactive plot using the [plotly](https://github.com/plotly/plotly.R) library. The names of the nodes and flows are mapped to the `text` aesthetic and can be used in the tooltips.
 
