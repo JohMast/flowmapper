@@ -8,6 +8,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' Add a flow map to a ggplot
 #'
 #' @param p The plot to which the flowmap should be added.
+#' @param k_nodes Number of clusters to group nodes into. If defiled, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.
 #' @param flowdat Input dataframe. See details below.
 #' @param node_buffer_factor Controls the distance between the nodes and the edges ( in multiple of the nodes' radii)
 #' @param node_radius_factor Controls the size of the nodes
@@ -40,7 +41,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #'
 #' Inspired by \href{https://flowmap.gl/}{flowmap.gl}.
 #'
-#' @importFrom dplyr mutate select left_join summarize group_by ungroup bind_rows n arrange group_split
+#' @importFrom dplyr mutate select left_join summarize group_by ungroup bind_rows n arrange group_split n_distinct
 #' @importFrom tidyr pivot_longer separate
 #' @importFrom forcats fct_reorder
 #' @importFrom ggplot2 ggplot geom_polygon annotate
@@ -63,7 +64,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' library(ggplot2)
 #' plot <- ggplot()
 #' plot |> add_flowmap(testdata)
-add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="black",k=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
+add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
 
   # Some checks
   if(arrow_point_angle>75){arrow_point_angle <- 75; cat("Warning. arrow_point_angle cannot exceed 75 degrees")}
@@ -73,10 +74,14 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     add_legend <- "none"}
 
 
-  if(!is.null(k)){
-    flowdat <- hca_flowdat(flowdat,k)
+  if(!is.null(k_nodes)){
+    flowdat <- hca_flowdat(flowdat,k_nodes)
+  }else{
+    if(n_distinct(flowdat$id_a)>50){
+      warning("Number of flows very high. Consider setting k_nodes to cluster nodes.")
+    }
   }
-  flowdat <- flowdat |> filter(id_a!=id_b)
+  flowdat <- flowdat |> dplyr::filter(id_a!=id_b)
 
 
 
@@ -99,7 +104,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     ungroup()
 
 
-  if(!is.null(node_fill_factor)){
+  if(is.null(node_fill_factor)){
     node_fill_factor <- 1/(nrow(nodes)-1)
   }
 

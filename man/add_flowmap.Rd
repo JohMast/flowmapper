@@ -10,10 +10,11 @@ add_flowmap(
   outline_linewidth = 0.01,
   alpha = 0.8,
   outline_col = "black",
+  k_nodes = NULL,
   node_buffer_factor = 1.2,
   node_radius_factor = 1,
   edge_offset_factor = 1,
-  node_fill_factor = 0.25,
+  node_fill_factor = NULL,
   edge_width_factor = 1.2,
   arrow_point_angle = 45,
   add_legend = "none",
@@ -32,6 +33,8 @@ add_flowmap(
 \item{alpha}{Opacity of the edges.}
 
 \item{outline_col}{Color of the outline of the edges.}
+
+\item{k_nodes}{Number of clusters to group nodes into. If defiled, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.}
 
 \item{node_buffer_factor}{Controls the distance between the nodes and the edges ( in multiple of the nodes' radii)}
 
