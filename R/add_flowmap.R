@@ -105,7 +105,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
 
 
   if(is.null(node_fill_factor)){
-    node_fill_factor <- 1/(nrow(nodes)-1)
+    node_fill_factor <- max(c(flowdat$flow_ab,flowdat$flow_ba))/max(nodes$flowsum)
   }
 
   xrange=max(nodes$x)-min(nodes$x)
