@@ -10,13 +10,14 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' @param p The plot to which the flowmap should be added.
 #' @param k_nodes Number of clusters to group nodes into. If defiled, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.
 #' @param flowdat Input dataframe. See details below.
-#' @param node_buffer_factor Controls the distance between the nodes and the edges ( in multiple of the nodes' radii)
-#' @param node_radius_factor Controls the size of the nodes
-#' @param node_fill_factor Controls the downscaling of the fill of the nodes ( as to not outshine the edges )
-#' @param edge_offset_factor Controls the distance between the parallel arrows
-#' @param edge_width_factor Controls the width of the edges
-#' @param outline_linewidth The linewidth of the outline of the arrows
+#' @param node_buffer_factor Controls the distance between the nodes and the edges ( in multiple of the nodes' radii).
+#' @param node_radius_factor Controls the size of the nodes.
+#' @param node_fill_factor Controls the downscaling of the fill of the nodes ( as to not outshine the edges ).
+#' @param edge_offset_factor Controls the distance between the parallel arrows.
+#' @param edge_width_factor Controls the width of the edges.
+#' @param outline_linewidth The linewidth of the outline of the arrows.
 #' @param alpha Opacity of the edges.
+#' @param nodes_alpha Opacity of the nodes.
 #' @param outline_col Color of the outline of the edges.
 #' @param arrow_point_angle Controls the pointiness of the edges.
 #' @param add_legend Add a legend for width to the plot? Must be one of "none","bottom","top","left", or "right". (Experimental)
@@ -64,7 +65,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' library(ggplot2)
 #' plot <- ggplot()
 #' plot |> add_flowmap(testdata)
-add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
+add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,nodes_alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
 
   # Some checks
   if(arrow_point_angle>75){arrow_point_angle <- 75; cat("Warning. arrow_point_angle cannot exceed 75 degrees")}
@@ -324,7 +325,7 @@ add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,outline_col="
     p <-
       p +
       geom_polygon(data=plot_df,aes(x,y,group=group,fill=flow,text=label),alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
-      geom_polygon(data=nodes_poly,aes(x=x,y=y,group=group,fill=flow,text=label),col=outline_col,linewidth=outline_linewidth)
+      geom_polygon(data=nodes_poly,aes(x=x,y=y,group=group,fill=flow,text=label),alpha=nodes_alpha,col=outline_col,linewidth=outline_linewidth)
   }, warning = function(w) {
     if (grepl("text",w,fixed=T)){invokeRestart("muffleWarning")}
   })
