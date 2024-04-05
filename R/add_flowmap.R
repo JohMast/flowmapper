@@ -8,7 +8,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' Add a flow map to a ggplot
 #'
 #' @param p The plot to which the flowmap should be added.
-#' @param k_nodes Number of clusters to group nodes into. If defiled, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.
+#' @param k_nodes Number of clusters to group nodes into. If defined, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.
 #' @param flowdat Input dataframe. See details below.
 #' @param node_buffer_factor Controls the distance between the nodes and the edges ( in multiple of the nodes' radii).
 #' @param node_radius_factor Controls the size of the nodes.

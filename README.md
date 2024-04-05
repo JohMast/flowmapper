@@ -14,7 +14,7 @@ You can install the development version of flowmapper like so:
 devtools::install_github("https://github.com/JohMast/flowmapper")
 ```
 
-## Example
+## Details
 
 flowmapper uses a single function `add_flowmap` to add a flowmap layer
 to an existing ggplot. `add_flowmap` requires as inputs a single
@@ -147,3 +147,120 @@ ggplotly(plot,tooltip = c("text","fill"))
 ```
 
 ![](man/figures/plotly_example.PNG)
+
+## Example
+
+The code below shows an example of real world data from Switzerland
+(same data used in
+[this](https://www.flowmap.blue/15kwLB4baXZ7jpip8q0JjgR6zDoS5Gt3gMLCTUAboQxk?v=46.719075,7.817990,7.51&a=0&d=1&c=0&lt=1&col=Default&f=45)
+flowmap). The data contains migration flows between the 26 Cantons of
+Switzerland.
+
+``` r
+library(dplyr,warn.conflicts = FALSE)
+#> Warning: Paket 'dplyr' wurde unter R Version 4.2.3 erstellt
+library(ggplot2,warn.conflicts = FALSE)
+library(sf)
+#> Warning: Paket 'sf' wurde unter R Version 4.2.3 erstellt
+#> Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE
+library(flowmapper)
+
+# load migration data
+data <-
+  flowmapper::CH_migration_data
+head(data)
+#> # A tibble: 6 × 8
+#>   id_a   id_b      flow_ab      xa       ya      xb       yb flow_ba
+#>   <chr>  <chr>       <dbl>   <dbl>    <dbl>   <dbl>    <dbl>   <dbl>
+#> 1 Zürich Bern         1673 963578. 6010540. 848945. 5913828.    2097
+#> 2 Zürich Lucerne      1017 963578. 6010540. 903672. 5953394.    1530
+#> 3 Zürich Uri            84 963578. 6010540. 960416. 5905545.     110
+#> 4 Zürich Schwyz       1704 963578. 6010540. 975336. 5952572.    1428
+#> 5 Zürich Obwalden       70 963578. 6010540. 917705. 5918015.     107
+#> 6 Zürich Nidwalden      94 963578. 6010540. 936303. 5930028.     132
+```
+
+As a background for the flow map, a ggplot is created using the
+administrative boundaries, sourced from the
+[GADM](https://gadm.org/index.html) dataset.
+
+``` r
+cantons <- flowmapper::cantons
+
+# basic plot with just the admin units
+p <- ggplot(cantons)+
+  geom_sf(fill=NA,col="gray30",linewidth=0.5) +
+  ggdark::dark_theme_bw()+
+  theme(panel.border = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())+
+  labs(title = "Migration in Switzerland 2016",
+       caption = "Data: Federal Statistical Office, Switzerland")
+#> Inverted geom defaults of fill and color/colour.
+#> To change them back, use invert_geom_defaults().
+p
+```
+
+<img src="man/figures/README-t10-1.png" width="70%" />
+
+The flowmap is then added to the base plot by using `add_flowmap`,
+applying some clustering to reduce the number of nodes from 26 to 10. A
+custom color scale is applied which matches the dark background.
+
+``` r
+p2 <-
+  p|>
+  add_flowmap(flowdat = data,
+              add_legend = "bottom",
+              edge_width_factor = 0.7,
+              k_nodes = 10,
+              outline_col = NA)+
+  theme(panel.grid = element_blank())+
+  scale_fill_gradient("Migration",
+                      low = "darkblue",
+                      high="white")
+p2
+```
+
+<img src="man/figures/README-t11-1.png" width="70%" />
+
+The flowmap uses the *color* and *fill* aesthetics, which can be
+limiting when the ggplot also should contain other layers using the same
+aesthetic. In such cases, the
+[ggnewscale](https://eliocamp.github.io/ggnewscale/) package can be used
+to enable a new scale for those aesthetics. The following example shows
+a flowmap being added to a basemap from the
+[basemaps](https://github.com/16EAGLE/basemaps) package, which itself
+uses the *fill* aesthetic.
+
+``` r
+library(basemaps)
+#> Warning: Paket 'basemaps' wurde unter R Version 4.2.3 erstellt
+
+p <- basemap_ggplot(cantons,
+                    map_service = "esri",
+                    map_type = "world_hillshade",
+                    alpha=0.3)+
+  theme_bw()+
+  theme(
+    # panel.background = element_rect(fill = 'black', colour = 'black'),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank())+
+  scale_x_continuous(expand = expansion(0,0))+
+  scale_y_continuous(expand = expansion(0,0))+
+  ggnewscale::new_scale_fill()+
+  labs(title = "Migration in Switzerland 2016",
+       caption = "Data: Federal Statistical Office, Switzerland")
+#> Loading basemap 'world_hillshade' from map service 'esri'...
+
+p|>
+  add_flowmap(flowdat = data,
+              edge_width_factor = 0.7,k_nodes = 10,
+              outline_col = NA)+
+  theme(panel.grid = element_blank())+
+  scale_fill_gradient("Migration",low = "gray",high="red")
+```
+
+<img src="man/figures/README-t12-1.png" width="70%" />

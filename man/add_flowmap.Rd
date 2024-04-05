@@ -9,6 +9,7 @@ add_flowmap(
   flowdat,
   outline_linewidth = 0.01,
   alpha = 0.8,
+  nodes_alpha = 0.8,
   outline_col = "black",
   k_nodes = NULL,
   node_buffer_factor = 1.2,
@@ -28,23 +29,25 @@ add_flowmap(
 
 \item{flowdat}{Input dataframe. See details below.}
 
-\item{outline_linewidth}{The linewidth of the outline of the arrows}
+\item{outline_linewidth}{The linewidth of the outline of the arrows.}
 
 \item{alpha}{Opacity of the edges.}
 
+\item{nodes_alpha}{Opacity of the nodes.}
+
 \item{outline_col}{Color of the outline of the edges.}
 
-\item{k_nodes}{Number of clusters to group nodes into. If defiled, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.}
+\item{k_nodes}{Number of clusters to group nodes into. If defined, nodes will be clustered hierarchically based on spatial proximity. By default, no clustering will be applied.}
 
-\item{node_buffer_factor}{Controls the distance between the nodes and the edges ( in multiple of the nodes' radii)}
+\item{node_buffer_factor}{Controls the distance between the nodes and the edges ( in multiple of the nodes' radii).}
 
-\item{node_radius_factor}{Controls the size of the nodes}
+\item{node_radius_factor}{Controls the size of the nodes.}
 
-\item{edge_offset_factor}{Controls the distance between the parallel arrows}
+\item{edge_offset_factor}{Controls the distance between the parallel arrows.}
 
-\item{node_fill_factor}{Controls the downscaling of the fill of the nodes ( as to not outshine the edges )}
+\item{node_fill_factor}{Controls the downscaling of the fill of the nodes ( as to not outshine the edges ).}
 
-\item{edge_width_factor}{Controls the width of the edges}
+\item{edge_width_factor}{Controls the width of the edges.}
 
 \item{arrow_point_angle}{Controls the pointiness of the edges.}
 
