@@ -192,7 +192,6 @@ p <- basemap_ggplot(cantons,
                     alpha=0.3)+
   theme_bw()+
   theme(
-    # panel.background = element_rect(fill = 'black', colour = 'black'),
     axis.title = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank())+
