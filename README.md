@@ -158,11 +158,8 @@ Switzerland.
 
 ``` r
 library(dplyr,warn.conflicts = FALSE)
-#> Warning: Paket 'dplyr' wurde unter R Version 4.2.3 erstellt
 library(ggplot2,warn.conflicts = FALSE)
 library(sf)
-#> Warning: Paket 'sf' wurde unter R Version 4.2.3 erstellt
-#> Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE
 library(flowmapper)
 
 # load migration data
@@ -197,8 +194,6 @@ p <- ggplot(cantons)+
         axis.ticks = element_blank())+
   labs(title = "Migration in Switzerland 2016",
        caption = "Data: Federal Statistical Office, Switzerland")
-#> Inverted geom defaults of fill and color/colour.
-#> To change them back, use invert_geom_defaults().
 p
 ```
 
@@ -231,12 +226,11 @@ aesthetic. In such cases, the
 [ggnewscale](https://eliocamp.github.io/ggnewscale/) package can be used
 to enable a new scale for those aesthetics. The following example shows
 a flowmap being added to a basemap from the
-[basemaps](https://github.com/16EAGLE/basemaps) package, which itself
-uses the *fill* aesthetic.
+[basemaps](https://jakob.schwalb-willmann.de/basemaps/) package, which
+itself uses the *fill* aesthetic.
 
 ``` r
 library(basemaps)
-#> Warning: Paket 'basemaps' wurde unter R Version 4.2.3 erstellt
 
 p <- basemap_ggplot(cantons,
                     map_service = "esri",
