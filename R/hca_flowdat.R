@@ -1,3 +1,5 @@
+utils::globalVariables(c("cutree","hclust","dist","clust","weighted.mean",
+                         "id_a_old","id_b_old","clust_a","clust_b","id_merged","f"))
 #' Use hierarchical clustering to merge nodes based on proximity
 #'
 #' @param flowdat The data containing flows from a to b, b to a, and the coordinates of a and b

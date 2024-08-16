@@ -14,7 +14,6 @@ A data frame with 325 rows and 8 columns:
 \item{flow_ba}{Number of migrations from B to A}
 \item{xa,ya}{Longitude and latitude of the centroid of Canton A. Web-Mercator projection (EPSG: 3857)}
 \item{xb,yb}{Longitude and latitude of the centroid of Canton B. Web-Mercator projection (EPSG: 3857)}
-...
 }
 }
 }

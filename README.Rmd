@@ -150,6 +150,7 @@ As a background for the flow map, a ggplot is created using the administrative b
 
 ```{r t10}
 cantons <- flowmapper::cantons
+st_crs(cantons) <- 3857
 
 # basic plot with just the admin units
 p <- ggplot(cantons)+

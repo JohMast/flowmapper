@@ -1,4 +1,5 @@
 library(tidyverse)
+library(sf)
 # download migration data from Federal Statistical Office
 data_url <- "https://dam-api.bfs.admin.ch/hub/api/dam/assets/3222163/master"
 temp <- tempfile()
@@ -80,7 +81,6 @@ CH_migration_data <- kanton_flows |>
             by=c("id_a", "id_b")) |>
   # select only one of the two rows (a-b and b-a) where the orig comes before the dest in alphabetical order
   filter(id_a>id_b)
-
 
 
 write_csv(CH_migration_data, "data-raw/CH_migration_data.csv")

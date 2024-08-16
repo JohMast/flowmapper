@@ -3,6 +3,7 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^README\.md$
-
+^suppl$
 ^cran-comments\.md$
 ^data-raw$
+^man/figures$
