@@ -1,3 +1,2 @@
-# flowmapper (development version)
-
+# flowmapper 0.1.0
 * Initial CRAN submission.
