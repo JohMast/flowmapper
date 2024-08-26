@@ -68,8 +68,8 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 add_flowmap <- function(p,flowdat,outline_linewidth=0.01,alpha=0.8,nodes_alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
 
   # Some checks
-  if(arrow_point_angle>75){arrow_point_angle <- 75; cat("Warning. arrow_point_angle cannot exceed 75 degrees")}
-  if(arrow_point_angle<20){arrow_point_angle <- 20; cat("Warning. arrow_point_angle cannot be lower than 20 degrees")}
+  if(arrow_point_angle>75){arrow_point_angle <- 75; warning("Warning. arrow_point_angle cannot exceed 75 degrees")}
+  if(arrow_point_angle<20){arrow_point_angle <- 20; warning("Warning. arrow_point_angle cannot be lower than 20 degrees")}
   if(!add_legend %in% c("top","bottom","none","right","left")){
     warning("add_legend must be either 'top', 'bottom','right','left', or 'none'. Defaulting to 'none'.")
     add_legend <- "none"}

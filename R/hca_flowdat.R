@@ -32,7 +32,6 @@ hca_flowdat <- function(flowdat,k=20) {
     group_by(clust) |>
     mutate(
       id_merged = first(id),
-      #id_merged = paste0(id, collapse = " ; "),  #for pasting others
       id_merged = paste0(first(id)," and ", n(), " others."),  #for pasting others
       x = weighted.mean(x, w = f),
       y = weighted.mean(y, w = f)
