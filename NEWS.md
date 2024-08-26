@@ -1,2 +1,2 @@
-# flowmapper 0.1.0
-* Initial CRAN submission.
+# flowmapper 0.1.1
+* CRAN resubmission
