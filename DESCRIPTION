@@ -2,7 +2,7 @@ Package: flowmapper
 Title: Draw Flows (Migration, Goods, Money, Information) on 'ggplot2' plots
 Version: 0.1.1
 Authors@R: 
-    person("Johannes", "Mast", , "johannes.mast@dlr.de", role = c("aut", "cre"),
+    person("Johannes", "Mast", ,"johannes.mast@dlr.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6595-5834"))
 Description: Adds flow maps to 'ggplot2' plots. The flow maps consist of 'ggplot2' layers which visualize the nodes as circles and the bilateral flows between the nodes as bidirectional half-arrows.
 License: MIT + file LICENSE
