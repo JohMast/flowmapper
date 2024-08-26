@@ -1,5 +1,5 @@
 Package: flowmapper
-Title: Draw Flows (Migration, Goods, Money, Information) on 'ggplot2' plots
+Title: Draw Flows (Migration, Goods, Money, Information) on 'ggplot2' Plots
 Version: 0.1.1
 Authors@R: 
     person("Johannes", "Mast", ,"johannes.mast@dlr.de", role = c("aut", "cre"),
