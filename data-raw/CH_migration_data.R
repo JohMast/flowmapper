@@ -83,8 +83,8 @@ CH_migration_data <- kanton_flows |>
   filter(id_a>id_b)
 
 # this avoids R CMD check complained about non-ASCII characters
-CH_migration_data$id_a <- iconv(CH_migration_data$id_a, from = "UTF-8", to = "UTF-8")
-CH_migration_data$id_b <- iconv(CH_migration_data$id_b, from = "UTF-8", to = "UTF-8")
+CH_migration_data$id_a <- iconv(CH_migration_data$id_a, from = "UTF-8", to = "ASCII//TRANSLIT")
+CH_migration_data$id_b <- iconv(CH_migration_data$id_b, from = "UTF-8", to = "ASCII//TRANSLIT")
 write_csv(CH_migration_data, "data-raw/CH_migration_data.csv")
 
 usethis::use_data(CH_migration_data, overwrite = TRUE)

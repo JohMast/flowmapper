@@ -10,6 +10,6 @@ cantons <-
 st_crs(cantons) <- NA
 
 # this avoids R CMD check complained about non-ASCII characters
-cantons$NAME_1 <- iconv(cantons$NAME_1, from = "UTF-8", to = "UTF-8")
+cantons$NAME_1 <- iconv(cantons$NAME_1, from = "UTF-8", to = "ASCII//TRANSLIT")
 
 usethis::use_data(cantons, overwrite = TRUE)
