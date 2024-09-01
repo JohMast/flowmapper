@@ -6,7 +6,9 @@
 \usage{
 add_flowmap(
   p,
-  flowdat,
+  flowdat = NULL,
+  od = NULL,
+  nodes = NULL,
   outline_linewidth = 0.01,
   alpha = 0.8,
   nodes_alpha = 0.8,
@@ -28,6 +30,10 @@ add_flowmap(
 \item{p}{The plot to which the flowmap should be added.}
 
 \item{flowdat}{Input dataframe. See details below.}
+
+\item{od}{As an alternative to \code{flowdat}, dataframe with the origin-destination pairs and the flow between them.  Must contain the columns o, d, value. \code{nodes} must be provided as well. See details below.}
+
+\item{nodes}{As an alternative to \code{flowdat}, a dataframe with the nodes of the network. Must contain the columns name, x, y. See details below.}
 
 \item{outline_linewidth}{The linewidth of the outline of the arrows.}
 
@@ -76,6 +82,19 @@ The function requires as inputs a dataframe \code{flowdat} which contains for ev
 \item \strong{yb:} The y coordinate of node b
 \item \strong{flow_ab:} The intensity of flow from node a to node b
 \item \strong{flow_ba:} The intensity of flow from node b to node a
+}
+
+Alternatively, the function can take as input a dataframe \code{od} which contains the origin-destination pairs and the flow between them. The dataframe should have the following columns:
+\itemize{
+\item \strong{o:} The unique id of the origin node
+\item \strong{d:} The unique id of the destination node
+\item \strong{value:} The intensity of flow between the origin and destination
+}
+In this case, the function also requires a dataframe \code{nodes} which contains the coordinates of the nodes. The dataframe should have the following columns:
+\itemize{
+\item \strong{name:} The unique id of the node
+\item \strong{x:} The x coordinate of the node
+\item \strong{y:} The y coordinate of the node
 }
 
 The function will impose coord_equal() on the ggplot.
