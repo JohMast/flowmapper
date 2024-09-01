@@ -1,9 +1,9 @@
 utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
-                         "aes","aux1","aux2","e","flow","flow_ab","flow_ba",
+                         "aes","aux1","aux2","e","flow","flow_ab","flow_ba","flows",
                          "flowsum","group","id","id_a","id_b","label","m_c",
                          "name","off_x","off_y","point","radius","value",
                          "width","x","xa","xb","xe","xf","xg","xm","xz","y",
-                         "ya","yb","ye","yf","yg","ym","yz"))
+                         "ya","yb","ye","yf","yg","ym","yz","o","d"))
 
 #' Add a flow map to a ggplot
 #'
@@ -618,14 +618,14 @@ short_scale = function(x, digits=3) {
 #' @title util_data_flow_to_flowdat
 #' @description This function takes a flow data frame in long format and a data frame with the nodes coordinates and returns a flowdat data frame
 #' @param nodes A data frame with the nodes of the network
-#' @param flow A data frame with the flow data
+#' @param flows A data frame with the flow data
 #' @return A data frame with the flow data in flowdat format
 #' @author Johannes Mast,
 #' @importFrom dplyr full_join select rename mutate coalesce filter left_join
 #' @examples
-#' nodes <- data.frame(name=c("a","b","c"),x=c(0,1,2),y=c(0,1,2))
-#' flow <- data.frame(o=c("a","b"),d=c("b","c"),value=c(1,2))
-#' util_data_flow_to_flowdat(nodes,flow)
+#' #nodes <- data.frame(name=c("a","b","c"),x=c(0,1,2),y=c(0,1,2))
+#' #flow <- data.frame(o=c("a","b"),d=c("b","c"),value=c(1,2))
+#' #util_data_flow_to_flowdat(nodes,flow)
 util_data_flow_to_flowdat <- function(nodes,flows){
   f <-
     flows |>

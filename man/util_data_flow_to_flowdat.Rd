@@ -9,7 +9,7 @@ util_data_flow_to_flowdat(nodes, flows)
 \arguments{
 \item{nodes}{A data frame with the nodes of the network}
 
-\item{flow}{A data frame with the flow data}
+\item{flows}{A data frame with the flow data}
 }
 \value{
 A data frame with the flow data in flowdat format
@@ -21,9 +21,9 @@ This function takes a flow data frame in long format and a data frame with the n
 Helper function to merge od data in long data and nodes to flowdat format
 }
 \examples{
-nodes <- data.frame(name=c("a","b","c"),x=c(0,1,2),y=c(0,1,2))
-flow <- data.frame(o=c("a","b"),d=c("b","c"),value=c(1,2))
-util_data_flow_to_flowdat(nodes,flow)
+#nodes <- data.frame(name=c("a","b","c"),x=c(0,1,2),y=c(0,1,2))
+#flow <- data.frame(o=c("a","b"),d=c("b","c"),value=c(1,2))
+#util_data_flow_to_flowdat(nodes,flow)
 }
 \author{
 Johannes Mast,
