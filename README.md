@@ -1,4 +1,8 @@
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # flowmapper
@@ -8,7 +12,13 @@ flowmapper allows to create ggplots with flowmaps in the style of
 
 ## Installation
 
-You can install the development version of flowmapper like so:
+You can install the released version of flowmapper from CRAN:
+
+``` r
+install.packages("flowmapper")
+```
+
+Or, you can install the development version of flowmapper like so:
 
 ``` r
 devtools::install_github("https://github.com/JohMast/flowmapper")
@@ -169,12 +179,12 @@ head(data)
 #> # A tibble: 6 × 8
 #>   id_a   id_b      flow_ab      xa       ya      xb       yb flow_ba
 #>   <chr>  <chr>       <dbl>   <dbl>    <dbl>   <dbl>    <dbl>   <dbl>
-#> 1 Zürich Bern         1673 963578. 6010540. 848945. 5913828.    2097
-#> 2 Zürich Lucerne      1017 963578. 6010540. 903672. 5953394.    1530
-#> 3 Zürich Uri            84 963578. 6010540. 960416. 5905545.     110
-#> 4 Zürich Schwyz       1704 963578. 6010540. 975336. 5952572.    1428
-#> 5 Zürich Obwalden       70 963578. 6010540. 917705. 5918015.     107
-#> 6 Zürich Nidwalden      94 963578. 6010540. 936303. 5930028.     132
+#> 1 Zurich Bern         1673 963578. 6010540. 848945. 5913828.    2097
+#> 2 Zurich Lucerne      1017 963578. 6010540. 903672. 5953394.    1530
+#> 3 Zurich Uri            84 963578. 6010540. 960416. 5905545.     110
+#> 4 Zurich Schwyz       1704 963578. 6010540. 975336. 5952572.    1428
+#> 5 Zurich Obwalden       70 963578. 6010540. 917705. 5918015.     107
+#> 6 Zurich Nidwalden      94 963578. 6010540. 936303. 5930028.     132
 ```
 
 As a background for the flow map, a ggplot is created using the
@@ -183,6 +193,7 @@ administrative boundaries, sourced from the
 
 ``` r
 cantons <- flowmapper::cantons
+st_crs(cantons) <- 3857
 
 # basic plot with just the admin units
 p <- ggplot(cantons)+

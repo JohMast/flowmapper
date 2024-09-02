@@ -2,7 +2,8 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
+<!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -21,7 +22,13 @@ flowmapper allows to create ggplots with flowmaps in the style of <https://flowm
 
 ## Installation
 
-You can install the development version of flowmapper like so:
+You can install the released version of flowmapper from CRAN:
+
+``` r
+install.packages("flowmapper")
+```
+
+Or, you can install the development version of flowmapper like so:
 
 ``` r
 devtools::install_github("https://github.com/JohMast/flowmapper")
