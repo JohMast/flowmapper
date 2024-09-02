@@ -102,6 +102,9 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
     flowdat <- util_data_flow_to_flowdat(nodes,od)
   }
 
+  if(inherits(flowdat,"grouped_df")){
+    flowdat <- flowdat |> dplyr::ungroup()
+  }
   # Some checks
   if(arrow_point_angle>75){arrow_point_angle <- 75; warning("Warning. arrow_point_angle cannot exceed 75 degrees")}
   if(arrow_point_angle<20){arrow_point_angle <- 20; warning("Warning. arrow_point_angle cannot be lower than 20 degrees")}
@@ -333,6 +336,9 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
       label=paste0("Route: ",group,"\nFlow: ",flow),
       group=forcats::fct_reorder(group,flowsum)
     )
+
+  plot_df <-
+    plot_df |> group_by(label) |> filter(sum(flow)>0) |> ungroup()
 
   # for the nodes, calculate the flow to be visualized (as fill) from the node_fill_factor and their flow sum
   nodes <-
