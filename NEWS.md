@@ -1,3 +1,3 @@
 # flowmapper 0.1.2
 
--   CRAN resubmission: Addressed Note: `found 104 marked UTF-8 strings`
+-   It is now possible to pass dataframes for flows (long format) and nodes separately. This is saves some data wrangling if your data is already in this form.

@@ -3,7 +3,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
                          "flowsum","group","id","id_a","id_b","label","m_c",
                          "name","off_x","off_y","point","radius","value",
                          "width","x","xa","xb","xe","xf","xg","xm","xz","y",
-                         "ya","yb","ye","yf","yg","ym","yz","o","d"))
+                         "ya","yb","ye","yf","yg","ym","yz","o","d","."))
 
 #' Add a flow map to a ggplot
 #'
@@ -57,7 +57,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #'
 #' Inspired by \href{https://flowmap.gl/}{flowmap.gl}.
 #'
-#' @importFrom dplyr mutate select left_join summarize group_by ungroup bind_rows n arrange group_split n_distinct
+#' @importFrom dplyr mutate select left_join summarize group_by ungroup bind_rows n arrange group_split n_distinct across where filter_all coalesce all_vars
 #' @importFrom tidyr pivot_longer separate
 #' @importFrom forcats fct_reorder
 #' @importFrom ggplot2 ggplot geom_polygon annotate
@@ -127,10 +127,10 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
   flowdat <- flowdat |> dplyr::filter(id_a!=id_b)
 
   #force convert factor columns to character
-  flowdat <- flowdat |> mutate(across(where(is.factor), as.character))
+  flowdat <- flowdat |> dplyr::mutate(dplyr::across(dplyr::where(is.factor), as.character))
 
   # remove any row with a missing value in any column
-  flowdat <- flowdat |> dplyr::filter_all(all_vars(!is.na(.)))
+  flowdat <- flowdat |> dplyr::filter_all(dplyr::all_vars(!is.na(.)))
 
   nodes <-
     bind_rows(
