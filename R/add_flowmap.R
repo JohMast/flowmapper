@@ -99,6 +99,10 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
   }
 
   if(is.null(flowdat) & !is.null(od) & !is.null(nodes)){
+    #force convert columns o and d to characters
+    od <- od |> mutate(o=as.character(o),d=as.character(d))
+    # force convert column name to character
+    nodes <- nodes |> mutate(name=as.character(name))
     flowdat <- util_data_flow_to_flowdat(nodes,od)
   }
 
@@ -112,7 +116,6 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
     warning("add_legend must be either 'top', 'bottom','right','left', or 'none'. Defaulting to 'none'.")
     add_legend <- "none"}
 
-
   if(!is.null(k_nodes)){
     flowdat <- hca_flowdat(flowdat,k_nodes)
   }else{
@@ -120,10 +123,14 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
       warning("Number of flows very high. Consider setting k_nodes to cluster nodes.")
     }
   }
+
   flowdat <- flowdat |> dplyr::filter(id_a!=id_b)
 
+  #force convert factor columns to character
+  flowdat <- flowdat |> mutate(across(where(is.factor), as.character))
 
-
+  # remove any row with a missing value in any column
+  flowdat <- flowdat |> dplyr::filter_all(all_vars(!is.na(.)))
 
   nodes <-
     bind_rows(
@@ -633,6 +640,12 @@ short_scale = function(x, digits=3) {
 #' #flow <- data.frame(o=c("a","b"),d=c("b","c"),value=c(1,2))
 #' #util_data_flow_to_flowdat(nodes,flow)
 util_data_flow_to_flowdat <- function(nodes,flows){
+
+  missing_nodes_o = unique(flows$o) %in% nodes$name
+  missing_nodes_d = unique(flows$d) %in% nodes$name
+  if(sum(!missing_nodes_o)>0) message(sum(!missing_nodes_o), " flow origins with no match in nodes names")
+  if(sum(!missing_nodes_d)>0) message(sum(!missing_nodes_d), " flow destinations with no match in nodes names")
+
   f <-
     flows |>
     dplyr::full_join(flows |> dplyr::select(d=o,o=d,flow_ba=value),by=c("o", "d")) |>
