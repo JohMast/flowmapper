@@ -1,9 +1,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
-[![CRAN
-downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper)
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
 
 # flowmapper
 
