@@ -20,10 +20,11 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' @param outline_linewidth The linewidth of the outline of the arrows.
 #' @param alpha Opacity of the edges.
 #' @param nodes_alpha Opacity of the nodes.
+#' @param legend_gradient If TRUE, the legend color will be a gradient from min to max flow. If FALSE, the legend will be a single color.
 #' @param outline_col Color of the outline of the edges.
 #' @param arrow_point_angle Controls the pointiness of the edges.
 #' @param add_legend Add a legend for width to the plot? Must be one of "none","bottom","top","left", or "right". (Experimental)
-#' @param legend_col If \code{add_legend}, controls the color of the legend. Default is grey.
+#' @param legend_col If \code{add_legend}, sets a monotone color for the legend. By default is "gray".
 #' @param legend_nudge_x Adjusts the horizontal position of the legend in map units.
 #' @param legend_nudge_y Adjusts the vertical position of the legend in map units.
 #'
@@ -80,7 +81,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' library(ggplot2)
 #' plot <- ggplot()
 #' plot |> add_flowmap(testdata)
-add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01,alpha=0.8,nodes_alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray"){
+add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01,alpha=0.8,nodes_alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray",legend_gradient=FALSE){
 
   if(!is.null(od) & is.null(nodes)){
     stop("When providing data in od format, nodes (a dataframe with the nodes coordiantes) must be defined as well.")
@@ -397,78 +398,129 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
     l1_y <- pa_d
     l1_x <- pa_l
     l2_y <- pa_d
-    l2_x <- pa_r
-    l3_y <- pa_d - maxwidth
-    l3_x <- pa_r
-    l4_y <- pa_d - maxwidth
-    l4_x <- pa_r - hrange*0.1
-    l5_y <- pa_d - minwidth
-    l5_x <- pa_l + hrange*0.1
-    l6_y <- pa_d - minwidth
-    l6_x <- pa_l
-
+    l2_x <- pa_l + hrange*0.1
+    l3_y <- pa_d
+    l3_x <- pa_r - hrange*0.1
+    l4_y <- pa_d
+    l4_x <- pa_r
+    l5_y <- pa_d - maxwidth
+    l5_x <- pa_r
+    l6_y <- pa_d - maxwidth
+    l6_x <- pa_r - hrange*0.1
+    l7_y <- pa_d - minwidth
+    l7_x <- pa_l + hrange*0.1
+    l8_y <- pa_d - minwidth
+    l8_x <- pa_l
+    # end segments
+    legend_outline <-
+      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x,l7_x,l8_x),
+                 y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y,l7_y,l8_y),
+                 flow=meanflow,
+                 group="outline")
+    legend_tail <-
+      data.frame(x=c(l1_x,l2_x,l7_x,l8_x),
+                 y=c(l1_y,l2_y,l7_y,l8_y),
+                 flow=minflow,
+                 group="tail")
+    legend_head <-
+      data.frame(x=c(l3_x,l4_x,l5_x,l6_x),
+                 y=c(l3_y,l4_y,l5_y,l6_y),
+                 flow=maxflow,
+                 group="head")
+    # intermediate segments
+    fracs <- seq(from=0,to=1,length.out=50)
+    intermediate_segment <- function(i){
+      frac <- fracs[i]
+      prev_frac <- fracs[i-1]
+      y01 = l2_y
+      x01 = l2_x + prev_frac*(l3_x-l2_x)
+      y02 = l2_y
+      x02 = l2_x + frac*(l3_x-l2_x)
+      y03 = l7_y + frac*(l6_y-l7_y)
+      x03 = l7_x + frac*(l3_x-l2_x)
+      y04 = l7_y + prev_frac*(l6_y-l7_y)
+      x04 = l7_x + prev_frac*(l3_x-l2_x)
+      data.frame(x=c(x01,x02,x03,x04),
+                 y=c(y01,y02,y03,y04),
+                 flow=minflow + frac*(maxflow-minflow),
+                 group=paste("intermediate",round(frac,3),sep="_"))
+    }
+    #combined segment df
     legend_df <-
-      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x),
-           y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y),
-           flow=maxflow)
+      bind_rows(legend_tail,
+                2:length(fracs) |> purrr::map(intermediate_segment) |> bind_rows(),
+                legend_head)
 
 
 
     #nudge in x direction
     nudge_x <- - 0.0* hrange
     legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
+    legend_outline$x <- legend_outline$x + nudge_x + legend_nudge_x
+
 
     #nudge in y direction depends on whether the legend is top or bottom
     if(add_legend == "top"){
       #nudge in y direction
       nudge_y <- + 1.2* vrange
       legend_df$y <- legend_df$y + nudge_y + legend_nudge_y
+      legend_outline$y <- legend_outline$y + nudge_y + legend_nudge_y
     }
 
     if(add_legend == "bottom"){
       #nudge in y direction
       nudge_y <- - 0.2* vrange
       legend_df$y <- legend_df$y + nudge_y + legend_nudge_y
+      legend_outline$y <- legend_outline$y + nudge_y + legend_nudge_y
     }
 
 
-    p <-
-      p+
-    geom_polygon(data=legend_df,aes(x=x,y=y),fill=legend_col,alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
+    if(!legend_gradient){
+      p <- p +
+        geom_polygon(data=legend_df,aes(x=x,y=y,group=group),fill=legend_col,alpha=alpha,col=NA,linewidth=outline_linewidth)
+    }else{
+      p <- p+ geom_polygon(data=legend_df,aes(x=x,y=y,fill=flow,group=group),alpha=alpha,col=NA,linewidth=outline_linewidth)
+    }
+
+    p <- p+
     # min annotation
     annotate(geom = "text",
-             x = legend_df$x[5],
+             x = legend_tail$x[2],
              y = legend_df$y[1]+vrange*0.05,
              label=short_scale(minflow),
              color=legend_col)+
     annotate("segment",
-             x = legend_df$x[5],
+             x = legend_tail$x[2],
              y = legend_df$y[1],
-             xend = legend_df$x[5],
+             xend = legend_tail$x[2],
              yend = legend_df$y[1]-minwidth,col="white")+
 
     # mean annotation
     annotate(geom = "text",
-             x = mean(c(legend_df$x[4],legend_df$x[5])),
+             x = mean(c(legend_head$x[3],legend_tail$x[3])),
              y = legend_df$y[1]+vrange*0.05,
              label=short_scale(meanflow),
              color=legend_col)+
     annotate("segment",
-             x = mean(c(legend_df$x[4],legend_df$x[5])),
+             x = mean(c(legend_head$x[3],legend_tail$x[3])),
              y = legend_df$y[1],
-             xend = mean(c(legend_df$x[4],legend_df$x[5])),
+             xend = mean(c(legend_head$x[3],legend_tail$x[3])),
              yend = legend_df$y[1]-mean(c(minwidth,maxwidth)),col="white")+
     # max annotation
     annotate(geom = "text",
-             x = legend_df$x[4],
+             x = legend_head$x[1],
              y = legend_df$y[1]+vrange*0.05,
              label=short_scale(maxflow),
              color=legend_col)+
     annotate("segment",
-             x = legend_df$x[4],
+             x = legend_head$x[1],
              y = legend_df$y[1],
-             xend = legend_df$x[4],
+             xend = legend_head$x[1],
              yend = legend_df$y[1]-maxwidth,col="white")
+
+    p <- p+
+      geom_polygon(data=legend_outline,aes(x=x,y=y),fill=NA,alpha=alpha,col=outline_col,linewidth=outline_linewidth)
+
   }
 
 
@@ -499,23 +551,61 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
 
     l1_y <- pa_d
     l1_x <- pa_r
-    l2_y <- pa_u
+    l2_y <- pa_d + vrange*0.1
     l2_x <- pa_r
-    l3_y <- pa_u
-    l3_x <- pa_r + maxwidth
-    l4_y <- pa_u - vrange*0.1
-    l4_x <- pa_r + maxwidth
-    l5_y <- pa_d + vrange*0.1
-    l5_x <- pa_r + minwidth
-    l6_y <- pa_d
-    l6_x <- pa_r + minwidth
+    l3_y <- pa_u - vrange*0.1
+    l3_x <- pa_r
+    l4_y <- pa_u
+    l4_x <- pa_r
+    l5_y <- pa_u
+    l5_x <- pa_r + maxwidth
+    l6_y <- pa_u - vrange*0.1
+    l6_x <- pa_r + maxwidth
+    l7_y <- pa_d + vrange*0.1
+    l7_x <- pa_r + minwidth
+    l8_y <- pa_d
+    l8_x <- pa_r + minwidth
+    # end segments
+    legend_outline <-
+      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x,l7_x,l8_x),
+                 y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y,l7_y,l8_y),
+                 flow=meanflow,
+                 group="outline")
 
+    legend_tail <-
+      data.frame(x=c(l1_x,l2_x,l7_x,l8_x),
+                 y=c(l1_y,l2_y,l7_y,l8_y),
+                 flow=minflow,
+                 group="tail")
+    legend_head <-
+      data.frame(x=c(l3_x,l4_x,l5_x,l6_x),
+                 y=c(l3_y,l4_y,l5_y,l6_y),
+                 flow=maxflow,
+                 group="head")
+    # intermediate segments
+    fracs <- seq(from=0,to=1,length.out=50)
+    intermediate_segment <- function(i){
+      frac <- fracs[i]
+      prev_frac <- fracs[i-1]
+      y01 = l2_y + prev_frac*(l3_y-l2_y)
+      x01 = l2_x
+      y02 = l7_y + frac*(l3_y-l2_y)
+      x02 = l2_x #+ frac*(l3_x-l2_x)
+      y03 = l7_y + frac*(l6_y-l7_y)
+      x03 = l7_x + frac*(l6_x-l7_x)
+      y04 = l7_y + prev_frac*(l3_y-l2_y)
+      x04 = l7_x + prev_frac*(l6_x-l7_x)
+      data.frame(x=c(x01,x02,x03,x04),
+                 y=c(y01,y02,y03,y04),
+                 flow=minflow + frac*(maxflow-minflow),
+                 group=paste("intermediate",round(frac,3),sep="_"))
+    }
+    #combined segment df
     legend_df <-
-      data.frame(x=c(l1_x,l2_x,l3_x,l4_x,l5_x,l6_x),
-             y=c(l1_y,l2_y,l3_y,l4_y,l5_y,l6_y),
-             flow=maxflow)
-
-
+      bind_rows(legend_tail,
+                2:length(fracs) |> purrr::map(intermediate_segment) |> bind_rows(),
+                legend_head
+      )
 
     #nudge in y direction
     nudge_y <- - 0.0* vrange
@@ -526,51 +616,63 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
       #nudge in x direction
       nudge_x <- - 1.1* hrange
       legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
-    }
+      legend_tail$x <- legend_tail$x + nudge_x + legend_nudge_x
+      legend_head$x <- legend_head$x + nudge_x + legend_nudge_x
+      legend_outline$x <- legend_outline$x + nudge_x + legend_nudge_x
+
+
+      }
 
     if(add_legend == "right"){
       #nudge in y direction
       nudge_x <- + 0.2* hrange
       legend_df$x <- legend_df$x + nudge_x + legend_nudge_x
+      legend_tail$x <- legend_tail$x + nudge_x + legend_nudge_x
+      legend_head$x <- legend_head$x + nudge_x + legend_nudge_x
+      legend_outline$x <- legend_outline$x + nudge_x + legend_nudge_x
     }
 
+    if(!legend_gradient){
+      p <- p+ geom_polygon(data=legend_df,aes(x=x,y=y,group=group),fill=legend_col,alpha=alpha,col=NA,linewidth=outline_linewidth)
+    }else{
+      p <- p+ geom_polygon(data=legend_df,aes(x=x,y=y,fill=flow,group=group),alpha=alpha,col=NA,linewidth=outline_linewidth)
+    }
     p <- p+
-      geom_polygon(data=legend_df,aes(x=x,y=y),fill=legend_col,alpha=alpha,col=outline_col,linewidth=outline_linewidth)+
       annotate("segment",
-               x = legend_df$x[5],
-               y = legend_df$y[1],
-               xend = legend_df$x[5]+minwidth,
-               yend = legend_df$y[1],col="white")+
+               x = legend_tail$x[2],
+               y = legend_tail$y[2],
+               xend = legend_tail$x[3],
+               yend = legend_tail$y[3],col="white")+
       annotate("segment",
-               y = mean(c(legend_df$y[4],legend_df$y[5])),
+               y = mean(c(legend_tail$y[2],legend_head$y[1])),
                x = legend_df$x[1],
-               yend = mean(c(legend_df$y[4],legend_df$y[5])),
+               yend = mean(c(legend_tail$y[2],legend_head$y[1])),
                xend = legend_df$x[1]+mean(c(minwidth,maxwidth)),col="white")+
 
       annotate("segment",
-               x = legend_df$x[1],
-               y = legend_df$y[4],
-               xend = legend_df$x[1]+maxwidth,
-               yend = legend_df$y[4],col="white"
+               x = legend_head$x[1],
+               y = legend_head$y[1],
+               xend = legend_head$x[4],
+               yend = legend_head$y[4],col="white"
                )
     if(add_legend=="left"){
       p <-
         p +
         annotate(geom = "text",
-                 x = legend_df$x[5],
-                 y = legend_df$y[1],
+                 x = legend_head$x[1],
+                 y = legend_tail$y[2],
                  label=paste0(" ",short_scale(minflow)),
                  color=legend_col,
                  hjust = 0)+
         annotate(geom = "text",
-                 y = mean(c(legend_df$y[4],legend_df$y[5])),
+                 y = mean(c(legend_head$y[1],legend_tail$y[2])),
                  x = legend_df$x[1],
                  label=paste0(" ",short_scale(meanflow)),
                  color=legend_col,
                  hjust = 0)+
         annotate(geom = "text",
-                 x = legend_df$x[1],
-                 y = legend_df$y[4],
+                 x = legend_head$x[1],
+                 y = legend_head$y[4],
                  label=paste0(" ",short_scale(maxflow)),
                  color=legend_col,
                  hjust = 0)
@@ -579,24 +681,26 @@ add_flowmap <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01
       p <-
         p +
         annotate(geom = "text",
-                 x = legend_df$x[5],
-                 y = legend_df$y[1],
+                 x = legend_head$x[1],
+                 y = legend_tail$y[2],
                  label=paste0(short_scale(minflow)," "),
                  color=legend_col,
                  hjust = 1)+
         annotate(geom = "text",
-                 y = mean(c(legend_df$y[4],legend_df$y[5])),
-                 x = legend_df$x[1],
+                 y = mean(c(legend_head$y[1],legend_tail$y[2])),
+                 x = legend_head$x[1],
                  label=paste0(short_scale(meanflow)," "),
                  color=legend_col,
                  hjust = 1)+
         annotate(geom = "text",
-                 x = legend_df$x[1],
-                 y = legend_df$y[4],
+                 x = legend_head$x[1],
+                 y = legend_head$y[4],
                  label=paste0(short_scale(maxflow)," "),
                  color=legend_col,
                  hjust = 1)
     }
+    p <- p+
+      geom_polygon(data=legend_outline,aes(x=x,y=y),fill=NA,alpha=alpha,col=outline_col,linewidth=outline_linewidth)
 
   }
 

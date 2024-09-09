@@ -130,15 +130,29 @@ plot |>
 Because the edges are polygons and not linked to an aesthetic, a typical
 ggplot legend cannot be created for their width. As an alternative, a
 legend can be added to the bottom of the main panel by using
-`add_legend` and `legend_col`.
+`add_legend`.
 
 ``` r
+# debug(add_flowmap)
 plot |>
-  add_flowmap(testdata,add_legend = "bottom",legend_col = "gray20")+
+  add_flowmap(testdata,add_legend = "left")+
   coord_equal()
 ```
 
 <img src="man/figures/README-t7-1.png" width="70%" />
+
+Instead of a monotone legend, the legend color can be set to represent
+the flow intensity with `legend_gradient`.
+
+``` r
+# debug(add_flowmap)
+plot |>
+  add_flowmap(testdata, add_legend = "bottom",legend_gradient=T)+
+  coord_equal()+
+  theme(legend.position = "none")
+```
+
+<img src="man/figures/README-t7_5-1.png" width="70%" />
 
 The flowmap can be turned into an interactive plot using the
 [plotly](https://github.com/plotly/plotly.R) library. The names of the
@@ -218,7 +232,7 @@ p2 <-
   add_flowmap(flowdat = data,
               add_legend = "bottom",
               edge_width_factor = 0.7,
-              k_nodes = 10,
+              k_nodes = 10,legend_gradient=T,
               outline_col = NA)+
   theme(panel.grid = element_blank())+
   scale_fill_gradient("Migration",

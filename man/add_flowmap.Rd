@@ -23,7 +23,8 @@ add_flowmap(
   add_legend = "none",
   legend_nudge_x = 0,
   legend_nudge_y = 0,
-  legend_col = "gray"
+  legend_col = "gray",
+  legend_gradient = FALSE
 )
 }
 \arguments{
@@ -63,7 +64,9 @@ add_flowmap(
 
 \item{legend_nudge_y}{Adjusts the vertical position of the legend in map units.}
 
-\item{legend_col}{If \code{add_legend}, controls the color of the legend. Default is grey.}
+\item{legend_col}{If \code{add_legend}, sets a monotone color for the legend. By default is "gray".}
+
+\item{legend_gradient}{If TRUE, the legend color will be a gradient from min to max flow. If FALSE, the legend will be a single color.}
 }
 \value{
 The ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes
