@@ -9,6 +9,7 @@ status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project
 flowmapper allows to create ggplots with flowmaps in the style of
 <https://flowmap.gl/>.
 
+For interactive flowmaps in R, also check out the [flowmapblue package](https://github.com/FlowmapBlue/flowmapblue.R)!
 ## Installation
 
 You can install the released version of flowmapper from CRAN:
