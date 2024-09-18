@@ -1,6 +1,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
+[![](https://cranlogs.r-pkg.org/badges/flowmapper)](https://cran.r-project.org/package=flowmapper)
 <!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
 <img align="right" src="https://github.com/JohMast/flowmapper/blob/master/inst/figures/hex.png" width="130" height="150" />
 
