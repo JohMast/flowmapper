@@ -62,6 +62,7 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' @importFrom tidyr pivot_longer separate
 #' @importFrom forcats fct_reorder
 #' @importFrom ggplot2 ggplot geom_polygon annotate
+#' @importFrom purrr map
 #' @return The ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes
 #' @author Johannes Mast
 #' @export

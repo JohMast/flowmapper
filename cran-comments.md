@@ -6,8 +6,4 @@
 
 Compared to the last version we:
 
--   Addressed Note: found 104 marked UTF-8 strings
-
--   Added additional checks
-
--   Added the option to pass data separately as flows and nodes.
+-   Added the option to have a fill-colored legend instead of a monotone legend, with the argument `legend_gradient` .

@@ -1,3 +1,3 @@
-# flowmapper 0.1.2
+# flowmapper 0.1.3
 
--   It is now possible to pass dataframes for flows (long format) and nodes separately. This is saves some data wrangling if your data is already in this form.
+-   Added the option to have a fill-colored legend instead of a monotone legend, with the argument `legend_gradient` .
