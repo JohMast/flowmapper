@@ -4,12 +4,14 @@
 \alias{hca_flowdat}
 \title{Use hierarchical clustering to merge nodes based on proximity}
 \usage{
-hca_flowdat(flowdat, k = 20)
+hca_flowdat(flowdat, k = 20, return_cluster_assignment = FALSE)
 }
 \arguments{
 \item{flowdat}{The data containing flows from a to b, b to a, and the coordinates of a and b}
 
 \item{k}{The number of nodes to keep.}
+
+\item{return_cluster_assignment}{Instead of an updated flowdat, return a dataframe with the cluster assignment of each node.}
 }
 \value{
 a dataframe of the same format as flowdat, but with some nodes (and their flows) merged. Note that this will in most cases contain some circular flows (a to a) even if the input flowdat did not.

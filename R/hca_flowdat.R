@@ -4,9 +4,10 @@ utils::globalVariables(c("cutree","hclust","dist","clust","weighted.mean",
 #'
 #' @param flowdat The data containing flows from a to b, b to a, and the coordinates of a and b
 #' @param k The number of nodes to keep.
-#' @importFrom dplyr filter mutate group_by first select bind_rows left_join summarize ungroup slice_head
+#' @param return_cluster_assignment Instead of an updated flowdat, return a dataframe with the cluster assignment of each node.
+#' @importFrom dplyr filter mutate group_by first select bind_rows left_join summarize ungroup slice_head select
 #' @return a dataframe of the same format as flowdat, but with some nodes (and their flows) merged. Note that this will in most cases contain some circular flows (a to a) even if the input flowdat did not.
-hca_flowdat <- function(flowdat,k=20) {
+hca_flowdat <- function(flowdat,k=20,return_cluster_assignment=FALSE) {
   nodes <-
     bind_rows(
       flowdat |>
@@ -24,19 +25,22 @@ hca_flowdat <- function(flowdat,k=20) {
       f = sum(f)
     )
 
+  clust <- hclust(dist(nodes[, 2:3], method = "euclidean"))
   nodes$clust <-
-    cutree(hclust(dist(nodes[, 2:3], method = "euclidean")), k = k)
+    cutree(clust, k = k)
 
   nodes_new <-
     nodes |>
     group_by(clust) |>
     mutate(
       id_merged = first(id),
-      id_merged = paste0(first(id)," and ", n(), " others."),  #for pasting others
+      id_merged = paste0(first(id)," and ", n()-1, " others."),  #for pasting others
       x = weighted.mean(x, w = f),
       y = weighted.mean(y, w = f)
     ) |>
     ungroup()
+
+  if(return_cluster_assignment){return(dplyr::select(nodes_new,clust,id))}
 
   flow_long <- bind_rows(
     flowdat |>
