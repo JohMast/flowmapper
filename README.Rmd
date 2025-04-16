@@ -2,8 +2,7 @@
 output: github_document
 ---
 
-[![CRAN status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
-<!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
+[![CRAN status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper) <!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -119,7 +118,7 @@ plot |>
 Because the edges are polygons and not linked to an aesthetic, a typical ggplot legend cannot be created for their width. As an alternative, a legend can be added to the bottom of the main panel by using `add_legend`.
 
 ```{r t7}
-# debug(add_flowmap)
+undebug(add_flowmap)
 plot |>
   add_flowmap(testdata,add_legend = "left")+
   coord_equal()
@@ -226,4 +225,33 @@ p|>
               outline_col = NA)+
   theme(panel.grid = element_blank())+
   scale_fill_gradient("Migration",low = "gray",high="red")
+```
+
+## Export as Simple Feature objects
+
+Finally, it may be desirable to receive the edges and nodes as spatial objects. This way, they can be used for visualisations in other geospatial software.
+
+To achieve this, the `flowmap_sf` function can be used. This function creates a list of two [sf](https://r-spatial.github.io/sf/) objects, one for the edges and one for the nodes.
+
+```{r t13}
+sf_objects <- 
+  flowmap_sf(
+  flowdat = data,
+  edge_width_factor = 0.7,
+  k_nodes = 10,
+  crs=3857
+)
+
+sf_edges <- sf_objects$edges
+sf_nodes <- sf_objects$nodes
+
+sf_edges
+sf_nodes
+```
+
+These objects can then be exported using `st_write`.
+
+```{r t14, eval=FALSE}
+sf::st_write(sf_nodes, "sf_nodes.gpkg", delete_dsn = TRUE)
+sf::st_write(sf_edges, "sf_edges.gpkg", delete_dsn = TRUE)
 ```

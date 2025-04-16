@@ -1,16 +1,13 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/flowmapper)](https://CRAN.R-project.org/package=flowmapper)
-[![](https://cranlogs.r-pkg.org/badges/flowmapper)](https://cran.r-project.org/package=flowmapper)
 <!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/flowmapper?color=brightgreen)](https://CRAN.R-project.org/package=flowmapper) -->
-<img align="right" src="https://github.com/JohMast/flowmapper/blob/master/inst/figures/hex.png" width="130" height="150" />
 
 # flowmapper
 
 flowmapper allows to create ggplots with flowmaps in the style of
 <https://flowmap.gl/>.
 
-For interactive flowmaps in R, also check out the [flowmapblue package](https://github.com/FlowmapBlue/flowmapblue.R)!
 ## Installation
 
 You can install the released version of flowmapper from CRAN:
@@ -136,7 +133,7 @@ legend can be added to the bottom of the main panel by using
 `add_legend`.
 
 ``` r
-# debug(add_flowmap)
+undebug(add_flowmap)
 plot |>
   add_flowmap(testdata,add_legend = "left")+
   coord_equal()
@@ -283,3 +280,80 @@ p|>
 ```
 
 <img src="man/figures/README-t12-1.png" width="70%" />
+
+## Export as Simple Feature objects
+
+Finally, it may be desirable to receive the edges and nodes as spatial
+objects. This way, they can be used for visualisations in other
+geospatial software.
+
+To achieve this, the `flowmap_sf` function can be used. This function
+creates a list of two [sf](https://r-spatial.github.io/sf/) objects, one
+for the edges and one for the nodes.
+
+``` r
+sf_objects <- 
+  flowmap_sf(
+  flowdat = data,
+  edge_width_factor = 0.7,
+  k_nodes = 10,
+  crs=3857
+)
+
+sf_edges <- sf_objects$edges
+sf_nodes <- sf_objects$nodes
+
+sf_edges
+#> Simple feature collection with 90 features and 3 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: 684313.7 ymin: 5812539 xmax: 1072488 ymax: 6023863
+#> Projected CRS: WGS 84 / Pseudo-Mercator
+#> First 10 features:
+#>                        orig                                 dest flow
+#> 1  Graubunden and 0 others.                 Geneve and 0 others.   12
+#> 2  Graubunden and 0 others.                 Geneve and 0 others.   10
+#> 3      Geneve and 0 others. Appenzell Ausserrhoden and 3 others.   33
+#> 4      Geneve and 0 others. Appenzell Ausserrhoden and 3 others.   56
+#> 5      Valais and 0 others.             Graubunden and 0 others.   49
+#> 6      Valais and 0 others.             Graubunden and 0 others.   42
+#> 7  Graubunden and 0 others.               Fribourg and 2 others.   59
+#> 8  Graubunden and 0 others.               Fribourg and 2 others.   65
+#> 9      Valais and 0 others.                 Ticino and 0 others.   66
+#> 10     Valais and 0 others.                 Ticino and 0 others.   88
+#>                          geometry
+#> 1  POLYGON ((1068217 5886897, ...
+#> 2  POLYGON ((686465.8 5815525,...
+#> 3  POLYGON ((686384.9 5816675,...
+#> 4  POLYGON ((1021820 5999137, ...
+#> 5  POLYGON ((851336.2 5814705,...
+#> 6  POLYGON ((1068208 5886407, ...
+#> 7  POLYGON ((1068345 5887602, ...
+#> 8  POLYGON ((763681.9 5889299,...
+#> 9  POLYGON ((851304.4 5813882,...
+#> 10 POLYGON ((977638.3 5829046,...
+sf_nodes
+#> Simple feature collection with 10 features and 2 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: 679809.4 ymin: 5811219 xmax: 1074959 ymax: 6020274
+#> Projected CRS: WGS 84 / Pseudo-Mercator
+#>                                    name flowsum                       geometry
+#> 1                  Aargau and 2 others.   52643 POLYGON ((951549.9 6012490,...
+#> 2  Appenzell Ausserrhoden and 3 others.   21675 POLYGON ((1032554 6001117, ...
+#> 3        Basel-Landschaft and 3 others.   23473 POLYGON ((854526.7 6013068,...
+#> 4                    Bern and 3 others.   36167 POLYGON ((881237.2 5928035,...
+#> 5                Fribourg and 2 others.   21884 POLYGON ((762690.3 5890344,...
+#> 6                  Geneve and 0 others.    7679 POLYGON ((685754.8 5815844,...
+#> 7                  Glarus and 3 others.   16455 POLYGON ((972571.5 5954447,...
+#> 8              Graubunden and 0 others.    7884 POLYGON ((1074959 5886586, ...
+#> 9                  Ticino and 0 others.    4756 POLYGON ((982871 5828370, 9...
+#> 10                 Valais and 0 others.    9056 POLYGON ((850578.6 5814447,...
+```
+
+These objects can then be exported using `st_write`.
+
+``` r
+sf::st_write(sf_nodes, "sf_nodes.gpkg", delete_dsn = TRUE)
+sf::st_write(sf_edges, "sf_edges.gpkg", delete_dsn = TRUE)
+```
