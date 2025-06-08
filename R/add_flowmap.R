@@ -468,7 +468,8 @@ short_scale = function(x, digits=3) {
     x >= 1000  ~ paste0(compress(x, 3), "k"),
     x >= 1     ~ as.character(compress(x, 0)),
     x >= 0.001 ~ paste0(scales::scientific(x)),
-    x >= 1e-6  ~ paste0(scales::scientific(x))
+    x >= 1e-6  ~ paste0(scales::scientific(x)),
+    x == 0 ~ paste("0")
   )
 }
 
