@@ -1,6 +1,6 @@
 Package: flowmapper
 Title: Draw Flows (Migration, Goods, Money, Information) on 'ggplot2' Plots
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: 
     person("Johannes", "Mast", ,"johannes.mast@dlr.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6595-5834"))
@@ -8,7 +8,7 @@ Description: Adds flow maps to 'ggplot2' plots. The flow maps consist of 'ggplot
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Imports: dplyr, ggplot2, tidyr, forcats, scales, purrr, sfheaders, sf
 URL: https://github.com/JohMast/flowmapper
 BugReports: https://github.com/JohMast/flowmapper/issues
