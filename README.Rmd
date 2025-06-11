@@ -256,3 +256,66 @@ These objects can then be exported using `st_write`.
 sf::st_write(sf_nodes, "sf_nodes.gpkg", delete_dsn = TRUE)
 sf::st_write(sf_edges, "sf_edges.gpkg", delete_dsn = TRUE)
 ```
+
+
+## Creating matching flowmaps for comparison
+
+For comparing flows (e.g., across dates) it is desirable to create multiple flowmaps with a matching style and scale. For this, the `add_flowmap_list` function can be used. It takes a list of inputs, rather than single inputs, and creates a list of ggplots, which can then be combined using the [patchwork](https://patchwork.data-imaginist.com/) package.
+
+```{r t 15}
+flowdatA <-
+  data.frame(
+    id_a = c("X1","X2","X3","X3","X1"),
+    id_b = c("X8","X7","X1","X8","X7"),
+    xa = c(2,14,10,10,2),
+    ya = c(6,10,9,9,6),
+    xb = c(10,4,2,10,4),
+    yb = c(4,10,6,4,10),
+    flow_ab = c(2,1,1,1,1),
+    flow_ba = c(8,1,1,1,2))
+
+flowdatB <-
+  data.frame(
+    id_a = c("X1","X2","X3","X3","X1"),
+    id_b = c("X8","X7","X1","X8","X7"),
+    xa = c(2,14,10,10,2),
+    ya = c(6,10,9,9,6),
+    xb = c(10,4,2,10,4),
+    yb = c(4,10,6,4,10),
+    flow_ab = c(2,3,2,0.2,1),
+    flow_ba = c(3,3,2,1,5))
+
+
+flowdatC <-
+  data.frame(
+    id_a = c("X1","X2","X3","X3","X1"),
+    id_b = c("X8","X7","X1","X8","X7"),
+    xa = c(2,14,10,10,2),
+    ya = c(6,10,9,9,6),
+    xb = c(10,4,2,10,4),
+    yb = c(4,10,6,4,10),
+    flow_ab = c(1,1,2,1,1)/2,
+    flow_ba = c(3,3,2,1,5)/3)
+
+
+list_of_flowdats <- list(flowdatA, flowdatB, flowdatC) 
+
+base_plot <- 
+  ggplot()+
+  theme_bw()+
+  coord_equal()
+
+flowmap_plots <- 
+  base_plot |> 
+  add_flowmap_list(list_of_flowdats,
+                   legend_gradient = T,
+                   add_legend = "bottom",
+                   k_nodes = 3)
+
+library(patchwork)
+(flowmap_plots[[1]]|flowmap_plots[[2]]|flowmap_plots[[3]])  +
+  plot_annotation(title = "Comparison of three different flow scenarios")&
+  theme(legend.position = "none",
+        panel.grid = element_blank())
+```
+

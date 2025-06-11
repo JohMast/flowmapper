@@ -7,6 +7,8 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 
 #' Add a list of flow maps to a ggplot, creating a list of plots
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param p The plot to which the flowmap should be added.
 #' @param flowdat A list of input dataframes. See details below.
 #' @param od As an alternative to \code{flowdat}, a list of dataframes with the origin-destination pairs and the flow between them.  Must contain the columns o, d, value. \code{nodes} must be provided as well. See details below.
@@ -70,20 +72,61 @@ utils::globalVariables(c("a_b","a_m","adj_radius","adj_radius_a","adj_radius_b",
 #' @export
 #'
 #' @examples
-#' testdata <-
+#'
+#' flowdatA <-
 #' data.frame(
-#'  id_a = c("X1","X2","X3","X3","X1"),
-#'  id_b = c("X8","X7","X1","X8","X7"),
-#'  xa = c(2,14,10,10,2),
-#'  ya = c(6,10,9,9,6),
-#'  xb = c(10,4,2,10,4),
-#'  yb = c(4,10,6,4,10),
-#'  flow_ab = c(2,1,1,1,1),
-#'  flow_ba = c(5,1,1,1,2)
-#')
+#'   id_a = c("X1","X2","X3","X3","X1"),
+#'   id_b = c("X8","X7","X1","X8","X7"),
+#'   xa = c(2,14,10,10,2),
+#'   ya = c(6,10,9,9,6),
+#'   xb = c(10,4,2,10,4),
+#'   yb = c(4,10,6,4,10),
+#'   flow_ab = c(2,1,1,1,1),
+#'   flow_ba = c(8,1,1,1,2))
+#'
+#' flowdatB <-
+#'   data.frame(
+#'     id_a = c("X1","X2","X3","X3","X1"),
+#'     id_b = c("X8","X7","X1","X8","X7"),
+#'     xa = c(2,14,10,10,2),
+#'     ya = c(6,10,9,9,6),
+#'     xb = c(10,4,2,10,4),
+#'     yb = c(4,10,6,4,10),
+#'     flow_ab = c(2,3,2,0.2,1),
+#'     flow_ba = c(3,3,2,1,5))
+#'
+#'
+#' flowdatC <-
+#'   data.frame(
+#'     id_a = c("X1","X2","X3","X3","X1"),
+#'     id_b = c("X8","X7","X1","X8","X7"),
+#'     xa = c(2,14,10,10,2),
+#'     ya = c(6,10,9,9,6),
+#'     xb = c(10,4,2,10,4),
+#'     yb = c(4,10,6,4,10),
+#'     flow_ab = c(1,1,2,1,1)/2,
+#'     flow_ba = c(3,3,2,1,5)/3)
+#'
+#'
+#' list_of_flowdats <- list(flowdatA, flowdatB, flowdatC)
+#'
 #' library(ggplot2)
-#' plot <- ggplot()
-#' plot |> add_flowmap(testdata)
+#' base_plot <-
+#'   ggplot()+
+#'   theme_bw()+
+#'   coord_equal()
+#'
+#' flowmap_plots <-
+#'   base_plot |>
+#'   add_flowmap_list(list_of_flowdats,
+#'                    legend_gradient = TRUE,
+#'                    add_legend = "bottom",
+#'                    k_nodes = 3)
+#'
+#'
+#'
+#'
+
 add_flowmap_list <- function(p,flowdat=NULL,od=NULL,nodes=NULL,outline_linewidth=0.01,alpha=0.8,nodes_alpha=0.8,outline_col="black",k_nodes=NULL,node_buffer_factor = 1.2, node_radius_factor = 1, edge_offset_factor = 1, node_fill_factor = NULL, edge_width_factor = 1.2, arrow_point_angle = 45,add_legend="none",legend_nudge_x=0,legend_nudge_y=0,legend_col="gray",legend_gradient=FALSE){
 
   if(!add_legend %in% c("top","bottom","none","right","left")){

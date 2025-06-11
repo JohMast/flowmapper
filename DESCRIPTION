@@ -9,9 +9,18 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Imports: dplyr, ggplot2, tidyr, forcats, scales, purrr, sfheaders, sf
+Imports: 
+    dplyr,
+    ggplot2,
+    tidyr,
+    forcats,
+    scales,
+    purrr,
+    sfheaders,
+    sf,
+    lifecycle
 URL: https://github.com/JohMast/flowmapper
 BugReports: https://github.com/JohMast/flowmapper/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1.0)
 LazyData: true

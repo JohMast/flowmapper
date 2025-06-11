@@ -72,7 +72,7 @@ add_flowmap_list(
 A list of ggplots, each corresponding to the input ggplot with an additional polygon layer for the flow arrows and an additional polygon layer for the nodes. One output is generated for each input element (in \code{flowdat}, \code{od}, or \code{nodes}).
 }
 \description{
-Add a list of flow maps to a ggplot, creating a list of plots
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
 This function creates a list of ggplot objects, each containing a flow map based on the provided data, which match in scales and are thus comparable. It is designed to work with a list of dataframes, where each dataframe represents for example a different day. The function prepares the data for plotting and then adds the flow map to the ggplot object.
@@ -106,20 +106,60 @@ The function will impose coord_equal() on the ggplot.
 Inspired by \href{https://flowmap.gl/}{flowmap.gl}.
 }
 \examples{
-testdata <-
+
+flowdatA <-
 data.frame(
- id_a = c("X1","X2","X3","X3","X1"),
- id_b = c("X8","X7","X1","X8","X7"),
- xa = c(2,14,10,10,2),
- ya = c(6,10,9,9,6),
- xb = c(10,4,2,10,4),
- yb = c(4,10,6,4,10),
- flow_ab = c(2,1,1,1,1),
- flow_ba = c(5,1,1,1,2)
-)
+  id_a = c("X1","X2","X3","X3","X1"),
+  id_b = c("X8","X7","X1","X8","X7"),
+  xa = c(2,14,10,10,2),
+  ya = c(6,10,9,9,6),
+  xb = c(10,4,2,10,4),
+  yb = c(4,10,6,4,10),
+  flow_ab = c(2,1,1,1,1),
+  flow_ba = c(8,1,1,1,2))
+
+flowdatB <-
+  data.frame(
+    id_a = c("X1","X2","X3","X3","X1"),
+    id_b = c("X8","X7","X1","X8","X7"),
+    xa = c(2,14,10,10,2),
+    ya = c(6,10,9,9,6),
+    xb = c(10,4,2,10,4),
+    yb = c(4,10,6,4,10),
+    flow_ab = c(2,3,2,0.2,1),
+    flow_ba = c(3,3,2,1,5))
+
+
+flowdatC <-
+  data.frame(
+    id_a = c("X1","X2","X3","X3","X1"),
+    id_b = c("X8","X7","X1","X8","X7"),
+    xa = c(2,14,10,10,2),
+    ya = c(6,10,9,9,6),
+    xb = c(10,4,2,10,4),
+    yb = c(4,10,6,4,10),
+    flow_ab = c(1,1,2,1,1)/2,
+    flow_ba = c(3,3,2,1,5)/3)
+
+
+list_of_flowdats <- list(flowdatA, flowdatB, flowdatC)
+
 library(ggplot2)
-plot <- ggplot()
-plot |> add_flowmap(testdata)
+base_plot <-
+  ggplot()+
+  theme_bw()+
+  coord_equal()
+
+flowmap_plots <-
+  base_plot |>
+  add_flowmap_list(list_of_flowdats,
+                   legend_gradient = TRUE,
+                   add_legend = "bottom",
+                   k_nodes = 3)
+
+
+
+
 }
 \author{
 Johannes Mast
